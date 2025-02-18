@@ -10,20 +10,17 @@ def setup_driver():
     # Set up Chrome options
     options = webdriver.ChromeOptions()
     
-    # Run in headless mode (optional)
-    # options.add_argument('--headless')
-    
-    # Disable GPU hardware acceleration (optional)
-    # options.add_argument('--disable-gpu')
-    
-    # Set a custom window size (optional)
-    # options.add_argument('window-size=1200x600')
-    
-    # Disable extensions (optional)
-    options.add_argument('--disable-extensions')
-    
-    # Ignore certificate errors (optional)
-    options.add_argument('--ignore-certificate-errors')
+    # Use your actual Chrome profile to avoid CAPTCHA
+    options.add_argument(r"--user-data-dir=C:\Users\Admin\AppData\Local\Google\Chrome\User Data")
+    options.add_argument("--profile-directory=Default")  # Change if using a different profile
+
+    # Optional: Make Selenium look more like a real user
+    options.add_argument("--disable-blink-features=AutomationControlled")  # Reduces bot detection
+    options.add_experimental_option("excludeSwitches", ["enable-automation"])
+    options.add_experimental_option("useAutomationExtension", False)
+
+    # Optional: Increase window size to avoid detection
+    options.add_argument("start-maximized")
     
     # Set up ChromeDriver using WebDriver Manager and Service
     service = Service(ChromeDriverManager().install())
@@ -41,7 +38,7 @@ def main():
     # Print the title of the page
     print(driver.title)
 
-    # Keep YouTube open for 10 seconds
+    # Keep YouTube open for 30 seconds
     time.sleep(30)  # Adjust the time (in seconds) as needed
 
     # Close the browser
