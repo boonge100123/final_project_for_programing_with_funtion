@@ -1,6 +1,5 @@
 #python 
 
-import time
 import csv
 import os
 from datetime import datetime
@@ -136,7 +135,7 @@ def scrape_all_products(driver, urls):
     scraped_data = []
     
     for website, url in urls:
-        date = datetime.now().strftime("%Y-%m-%d")
+        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         print(f"Scraping: {url} from {website}")
         
         try:
@@ -163,6 +162,12 @@ def scrape_all_products(driver, urls):
     print(scraped_data)
     print('-------------------------------')
     return scraped_data
+
+def call_scraper():
+    driver = setup_driver()
+    urls = get_data_from_csv('user_data_request.csv')
+    scraped_data = scrape_all_products(driver, urls)
+    write_to_csv(scraped_data, 'scraped_data.csv')
 
 def main():
     driver = setup_driver()
