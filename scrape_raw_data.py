@@ -135,7 +135,7 @@ def scrape_all_products(driver, urls):
     scraped_data = []
     
     for website, url in urls:
-        date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        date = datetime.now().strftime("%Y-%m-%d")
         print(f"Scraping: {url} from {website}")
         
         try:
