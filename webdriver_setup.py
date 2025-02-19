@@ -11,7 +11,7 @@ def setup_driver():
     options = webdriver.ChromeOptions()
     
     # Use your actual Chrome profile to avoid CAPTCHA
-    options.add_argument(r"--user-data-dir=C:\Users\Admin\AppData\Local\Google\Chrome\User Data")
+    options.add_argument(r"--user-data-dir=C:\Users\Jeb Boone\AppData\Local\Google\Chrome\User Data\Default")
     options.add_argument("--profile-directory=Default")  # Change if using a different profile
 
     # Optional: Make Selenium look more like a real user
