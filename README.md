@@ -9,3 +9,8 @@ the last button is how you can view the graph that tracks prices over time.
 *important* before closeing the teminal it is important you close the loop. it shuldent break anything but you will have to break the loop before you can open the terminal again.
 
 *important* i will include a fake data set in the user_data_request.csv to show that the data is working but you can add other products to the page by providing a url.
+
+
+1) To Run This Program run the file named scraper_app.py it will do everything
+2) the test_scraper_app.py is the app with test funtions in it
+3) all other files can be run indipendintly and will all do as intended
