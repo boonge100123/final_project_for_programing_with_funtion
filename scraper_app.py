@@ -64,6 +64,8 @@ class ScraperApp:
         while self.is_running:
             call_scraper()
             time.sleep(86400)  # Wait 24 hours before running again
+            # time.sleep(300) # Wait 5 minutes before running again
+            # time.sleep(90) # Wait 1.5 minutes before running again
 
     def open_graph(self):
         create_graph()
