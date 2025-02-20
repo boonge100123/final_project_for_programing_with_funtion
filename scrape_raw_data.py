@@ -54,6 +54,7 @@ def scrape_amazon_product(driver, url):
         print(f"Error scraping Amazon {url}: {e}")
         return None, None
 
+#! this function writes the data to the csv file
 def write_to_csv(data, file_path):
     file_exists = os.path.isfile(file_path)  # Check if the file already exists
 
@@ -64,6 +65,7 @@ def write_to_csv(data, file_path):
             writer.writerow(["Website", "URL", "Product Name", "Price", "Date"])  # Write header
         writer.writerows(data)  # Write scraped data
 
+#! this function scrapes all the products from the website
 def scrape_all_products(driver, urls):
     scraped_data = []
     
@@ -90,12 +92,14 @@ def scrape_all_products(driver, urls):
     print('-------------------------------')
     return scraped_data
 
+#! this function that can be called into another file it does the same thing as the main function
 def call_scraper():
     driver = setup_driver()
     urls = get_data_from_csv('user_data_request.csv')
     scraped_data = scrape_all_products(driver, urls)
     write_to_csv(scraped_data, 'scraped_data.csv')
 
+#! this is the main function that calls the other functions and sets up the driver
 def main():
     driver = setup_driver()
     urls = get_data_from_csv('user_data_request.csv')

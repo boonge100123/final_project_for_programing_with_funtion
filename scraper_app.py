@@ -5,7 +5,17 @@ from scrape_raw_data import call_scraper
 import threading
 import time
 
+#! this is the time that the loop will run for in the loop function this is in seconds
+#! 86400 seconds is 24 hours
+#! 300 seconds is 5 minutes
+#! 90 seconds is 1.5 minutes .. and so on
+LOOP_TIME = 86400  # 24 hours in seconds
+
+#! this is the scraper app class
+#! basicly this lets me run the scraper in a loop use buttons to start and stop the loop
+#! and save the url to a csv file
 class ScraperApp:
+    #! this is the funtion that sets up the class 
     def __init__(self, master):
         self.master = master
         self.is_running = False  # Track loop state
@@ -37,6 +47,7 @@ class ScraperApp:
         self.graph_button = tk.Button(master, text="Open Graph", command=self.open_graph)
         self.graph_button.pack()
 
+    #! this function saves the url to a the user data request csv file that will be used to call the urls that need to be scraped
     def save_url(self):
         url = self.url_entry.get()
         if url:  # Check if the URL is not empty
@@ -46,6 +57,7 @@ class ScraperApp:
                 writer.writerow(['Amazon', url])  
             print(f"Saved URL: Amazon, {url}")  
 
+    #! this is the function that starts the loop when the button is pressed in the gui
     def start_loop(self):
         """Start the scraper loop."""
         if not self.is_running:
@@ -54,19 +66,19 @@ class ScraperApp:
             self.loop_thread.start()
             print("Loop started.")
 
+    #! this is the function that stops the loop when the button is pressed in the gui
     def stop_loop(self):
         """Stop the scraper loop."""
         self.is_running = False
         print("Loop stopped.")
 
+    #! this is the function that runs the scraper in a loop it is set for 24 hours but can be changed to any time by changing the loop time above
     def run_scraper_loop(self):
-        """Runs the scraping function in a loop every 24 hours."""
         while self.is_running:
             call_scraper()
-            time.sleep(86400)  # Wait 24 hours before running again
-            # time.sleep(300) # Wait 5 minutes before running again
-            # time.sleep(90) # Wait 1.5 minutes before running again
+            time.sleep(LOOP_TIME) 
 
+    #! this is the function that opens the graph when the button is pressed in the gui
     def open_graph(self):
         create_graph()
 
