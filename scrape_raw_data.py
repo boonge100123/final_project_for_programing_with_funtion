@@ -2,10 +2,7 @@
 
 import csv
 import os
-import re
-import time
 from datetime import datetime
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
@@ -15,11 +12,11 @@ WEBSIGHT_INDEX = 0  # Column index for the website in the CSV file
 URL_INDEX = 1  # Column index for the URL in the CSV file
 
 def get_data_from_csv(file_path):
-    with open(file_path, mode='r') as file:
-        reader = csv.reader(file)
+    with open(file_path, mode='r') as file: #open you csv file in read mode
+        reader = csv.reader(file) #give the file to csv.reader
         next(reader, None)  # Skip the header row safely
         return [(row[WEBSIGHT_INDEX].strip().lower(), row[URL_INDEX].strip()) 
-                for row in reader if len(row) > URL_INDEX and row[WEBSIGHT_INDEX].strip() and row[URL_INDEX].strip()]
+                for row in reader if len(row) > URL_INDEX and row[WEBSIGHT_INDEX].strip() and row[URL_INDEX].strip()] # go through each row and get the data in the first column
     
 def scrape_amazon_product(driver, url):
     driver.get(url)
@@ -29,13 +26,13 @@ def scrape_amazon_product(driver, url):
         title_element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[@id='productTitle']"))
         )
-        title = title_element.text.strip()
+        title = title_element.text.strip() # Get the product title
 
         # Wait until the price element is present
         price_element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[@class='a-price-whole']"))
         )
-        price_whole = price_element.text.strip()
+        price_whole = price_element.text.strip() #strip the price from the website
 
         # Now, find the fractional part if it exists
         try:
