@@ -1,21 +1,26 @@
+import subprocess
+import sys
+import os
+import time
 from selenium import webdriver
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
-import time
-import os
-import sys
 
-def get_chrome_user_data_path():
-    """Returns the default Chrome user data directory based on the OS."""
-    if sys.platform == "win32":
-        return os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\User Data")
-    elif sys.platform == "darwin":
-        return os.path.expanduser("~/Library/Application Support/Google/Chrome")
-    elif sys.platform.startswith("linux"):
-        return os.path.expanduser("~/.config/google-chrome")
-    else:
-        raise RuntimeError("Unsupported operating system")
+def install_packages():
+    packages = [
+        "selenium",
+        "webdriver-manager",
+        "pandas",
+        "matplotlib"
+    ]
+    
+    for package in packages:
+        try:
+            __import__(package)  # Try to import the package
+        except ImportError:
+            print(f"Installing {package}...")
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package])
 
 def setup_driver():
     """Sets up and returns a Chrome WebDriver instance with user profile support."""
@@ -23,7 +28,7 @@ def setup_driver():
     options = webdriver.ChromeOptions()
     
     # Use your actual Chrome profile to avoid CAPTCHA
-    chrome_user_data_path = get_chrome_user_data_path()
+    chrome_user_data_path = get_chrome_user_data_dir()
     options.add_argument(f"--user-data-dir={chrome_user_data_path}")
     options.add_argument("--profile-directory=Default")  # Change if using a different profile
 
@@ -41,9 +46,21 @@ def setup_driver():
     
     return driver
 
+def get_chrome_user_data_dir():
+    """Returns the default Chrome user data directory based on the OS."""
+    if sys.platform == "win32":
+        return os.path.expandvars(r"%LOCALAPPDATA%\Google\Chrome\User Data")
+    elif sys.platform == "darwin":
+        return os.path.expanduser("~/Library/Application Support/Google/Chrome")
+    elif sys.platform.startswith("linux"):
+        return os.path.expanduser("~/.config/google-chrome")
+    else:
+        raise RuntimeError("Unsupported operating system")
+
 def main():
-    """Main function to test WebDriver setup."""
-    driver = setup_driver()
+    """Main function to set up the environment and test WebDriver."""
+    install_packages()  # Install necessary packages
+    driver = setup_driver()  # Set up the WebDriver
     
     # Open YouTube
     driver.get("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
