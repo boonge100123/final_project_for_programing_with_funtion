@@ -48,7 +48,8 @@ def main():
         create_graph()  # Create a graph from the CSV data
         # time.sleep(86,400)  # Sleep for 1 hour
         # time.sleep(3600) #sleep for 1 hour
-        time.sleep(300) #sleep for 5 minutes
+        # time.sleep(300) #sleep for 5 minutes
+        time.sleep(90)
     # create_graph()
 
 if __name__ == "__main__":
