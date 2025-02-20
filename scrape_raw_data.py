@@ -3,6 +3,7 @@
 import csv
 import os
 import re
+import time
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -19,43 +20,6 @@ def get_data_from_csv(file_path):
         next(reader, None)  # Skip the header row safely
         return [(row[WEBSIGHT_INDEX].strip().lower(), row[URL_INDEX].strip()) 
                 for row in reader if len(row) > URL_INDEX and row[WEBSIGHT_INDEX].strip() and row[URL_INDEX].strip()]
-
-def scrape_newegg_product(driver, url):
-    driver.get(url)
-
-    try:
-        # Extract product title
-        title_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//h1[@class='product-title']"))
-        )
-        title = title_element.text.strip()
-
-        # Extract full page source
-        page_source = driver.page_source
-
-        # Use regex to find the FinalPrice (without the $ symbol)
-        match = re.search(r'"Price":(\d+\.\d{2}),', page_source)
-
-        if match:
-            price = match.group(1)  # Extract the price
-            print(f"Newegg Product: {title}, Price: {price}")
-
-            # Save data to CSV file
-            csv_filename = "scraped_data.csv"
-            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
-
-            with open(csv_filename, mode='a', newline='', encoding='utf-8') as file:
-                writer = csv.writer(file)
-                writer.writerow(["Newegg", url, title, price, current_date])  # Append new data
-
-            return title, price
-        else:
-            print(f"Could not find price for {url}")
-            return None, None
-
-    except Exception as e:
-        print(f"Error scraping Newegg {url}: {e}")
-        return None, None
     
 def scrape_amazon_product(driver, url):
     driver.get(url)
@@ -89,52 +53,6 @@ def scrape_amazon_product(driver, url):
     except Exception as e:
         print(f"Error scraping Amazon {url}: {e}")
         return None, None
-    
-def scrape_walmart_product(driver, url):
-    driver.get(url)
-
-    try:
-        # Wait until the product title is present on the page
-        title_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//h1[@class='prod-ProductTitle-no-margin']"))
-        )
-        title = title_element.text.strip()
-
-        # Wait until the price element is present
-        price_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='price-group']"))
-        )
-        price = price_element.text.strip()
-
-        print(f"Walmart Product: {title}, Price: {price}")
-        return title, price
-
-    except Exception as e:
-        print(f"Error scraping Walmart {url}: {e}")
-        return None, None
-
-def scrape_other_websights(driver, url):
-    driver.get(url)
-
-    try:
-        # Wait until the product title is present on the page
-        title_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//h1"))  # Adjust the XPath as needed for the specific website
-        )
-        title = title_element.text.strip()
-
-        # Wait until the price element is present
-        price_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//span[@class='price']"))  # Adjust the XPath as needed
-        )
-        price = price_element.text.strip()
-
-        print(f"Other Product: {title}, Price: {price}")
-        return title, price
-
-    except Exception as e:
-        print(f"Error scraping {url}: {e}")
-        return None, None
 
 def write_to_csv(data, file_path):
     file_exists = os.path.isfile(file_path)  # Check if the file already exists
@@ -154,20 +72,14 @@ def scrape_all_products(driver, urls):
         print(f"Scraping: {url} from {website}")
         
         try:
-            if website == "newegg":
-                title, price = scrape_newegg_product(driver, url)
-            elif website == "amazon":
-                title, price = scrape_amazon_product(driver, url)
-            elif website == "walmart":
-                title, price = scrape_walmart_product(driver, url)
+            if "amazon" in website:
+                product_name, price = scrape_amazon_product(driver, url)
             else:
-                title, price = scrape_other_websights(driver, url)
-            
-            if title and price:
-                scraped_data.append((website, url, title, price, date))
-                print(f"Successfully scraped: {title} for {price} from {website}")
-            else:
-                print(f"No title or price found for: {url}")
+                print(f"Unknown website: {website}")
+                product_name, price = None, None
+
+            if product_name and price:
+                scraped_data.append([website, url, product_name, price, date])
 
         except Exception as e:
             print(f"Error scraping {url}: {e}")
