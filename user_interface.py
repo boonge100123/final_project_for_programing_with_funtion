@@ -1,5 +1,6 @@
 import tkinter as tk
 import csv
+from loop_and_graphing import create_graph
 
 class ScraperApp:
     def __init__(self, master):
@@ -49,8 +50,7 @@ class ScraperApp:
         print("Stop loop function called. Add your logic here.")
 
     def open_graph(self):
-        # Placeholder for graph opening logic
-        print("Open graph function called. Add your logic here.")
+        create_graph()
 
 if __name__ == "__main__":
     root = tk.Tk()
