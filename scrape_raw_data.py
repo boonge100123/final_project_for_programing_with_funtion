@@ -2,6 +2,7 @@
 
 import csv
 import os
+import re
 from datetime import datetime
 from selenium import webdriver
 from selenium.webdriver.common.by import By
@@ -23,20 +24,34 @@ def scrape_newegg_product(driver, url):
     driver.get(url)
 
     try:
-        # Wait until the product title is present on the page
+        # Extract product title
         title_element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//h1[@class='product-title']"))
         )
         title = title_element.text.strip()
 
-        # Wait until the price element is present (try the specific format first)
-        price_element = WebDriverWait(driver, 10).until(
-            EC.presence_of_element_located((By.XPATH, "//li[@class='price-current']"))
-        )
-        price = price_element.text.strip()
+        # Extract full page source
+        page_source = driver.page_source
 
-        print(f"Newegg Product: {title}, Price: {price}")
-        return title, price
+        # Use regex to find the FinalPrice (without the $ symbol)
+        match = re.search(r'"Price":(\d+\.\d{2}),', page_source)
+
+        if match:
+            price = match.group(1)  # Extract the price
+            print(f"Newegg Product: {title}, Price: {price}")
+
+            # Save data to CSV file
+            csv_filename = "scraped_data.csv"
+            current_date = datetime.datetime.now().strftime("%Y-%m-%d")
+
+            with open(csv_filename, mode='a', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                writer.writerow(["Newegg", url, title, price, current_date])  # Append new data
+
+            return title, price
+        else:
+            print(f"Could not find price for {url}")
+            return None, None
 
     except Exception as e:
         print(f"Error scraping Newegg {url}: {e}")
@@ -177,4 +192,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
