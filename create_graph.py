@@ -16,6 +16,9 @@ def create_graph():
     # Ensure 'date' is in the correct format
     df['date'] = pd.to_datetime(df['date'], errors='coerce')
 
+    # Replace empty strings with NaN in 'price' before conversion
+    df['price'] = df['price'].replace('', pd.NA)
+
     # Convert 'price' to a number. or strip non number characters and convert to float
     df['price'] = df['price'].astype(str).str.replace(r'[^\d.]', '', regex=True).astype(float)
 
