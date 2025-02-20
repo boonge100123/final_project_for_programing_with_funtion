@@ -1,24 +1,31 @@
-#python
-
 import pytest
-import csv
+import pandas as pd
+from create_graph import read_from_csv, create_graph
+import matplotlib.pyplot as plt
 
-def test_scraper_app():
-    data_file = 'scraped_data.csv'
-    reader = csv.reader(open(data_file))
-    next(reader)  # Skip the first line
-    data = list(reader)
-    product_info = set()
-    seen_titles = {}
-    for row in data:
-        if len(row) > 3:
-            title = ' '.join(row[2].split()[:3])
-            price = row[3]
-            seen_titles[title] = price  # Update the price if the title already exists
-    for title, price in seen_titles.items():
-        product_info.add((title, price))
-    for info in product_info:
-        
+def test_read_from_csv(monkeypatch):
+    df = read_from_csv("scraped_data.csv")  # Use actual CSV file
+    
+    assert not df.empty  # Ensure data is read
+    assert 'website' in df.columns  # Check for normalized column name
+    assert 'product name' in df.columns  # Ensure column exists
+    assert isinstance(df.iloc[0]['product name'], str)  # Validate type
+    assert isinstance(df.iloc[0]['price'], str)  # Ensure price is read as a string before conversion
 
-# pytest.main(["-v", "--tb=line", "-rN", __file__])
-test_scraper_app()
+def test_create_graph(monkeypatch):
+    df = read_from_csv("scraped_data.csv")  # Ensure the file exists
+    
+    assert not df.empty  # Ensure data is read
+    
+    #plt.show to prevent graph display during testing
+    plt.show = lambda: None  
+
+    try:
+        create_graph()
+        assert True  # Test passes if no exception occurs
+    except Exception as e:
+        pytest.fail(f"graph is not working: {e}")
+
+# Run the tests
+if __name__ == "__main__":
+    pytest.main(["-v", "--tb=line", "-rN", __file__])
