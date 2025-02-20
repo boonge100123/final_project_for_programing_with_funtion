@@ -11,6 +11,7 @@ from webdriver_setup import setup_driver
 WEBSIGHT_INDEX = 0  # Column index for the website in the CSV file
 URL_INDEX = 1  # Column index for the URL in the CSV file
 
+#! this is a csv reader function that reads the data from the csv file and returns the data in a list
 def get_data_from_csv(file_path):
     with open(file_path, mode='r') as file: #open you csv file in read mode
         reader = csv.reader(file) #give the file to csv.reader
@@ -18,6 +19,8 @@ def get_data_from_csv(file_path):
         return [(row[WEBSIGHT_INDEX].strip().lower(), row[URL_INDEX].strip()) 
                 for row in reader if len(row) > URL_INDEX and row[WEBSIGHT_INDEX].strip() and row[URL_INDEX].strip()] # go through each row and get the data in the first column
     
+#! this function scrapes the data from the amazon website
+#! i used chat gpt to figure out how to scrape data from amazon
 def scrape_amazon_product(driver, url):
     driver.get(url)
     
@@ -26,7 +29,7 @@ def scrape_amazon_product(driver, url):
         title_element = WebDriverWait(driver, 10).until(
             EC.presence_of_element_located((By.XPATH, "//span[@id='productTitle']"))
         )
-        title = title_element.text.strip() # Get the product title
+        title = title_element.text.strip() # strip the product title
 
         # Wait until the price element is present
         price_element = WebDriverWait(driver, 10).until(

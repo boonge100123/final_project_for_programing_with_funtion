@@ -1,12 +1,15 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
+#! i used chat gpt and copilot to figure this funtion out. basicly it just stores the data from the csv file into a dataframe
+#! then it makes the data into a standard form, and prints the column names to the terminal. then it returns the dataframe
 def read_from_csv(filename='scraped_data.csv'):
     df = pd.read_csv(filename)  # Read the CSV file into a DataFrame
     df.columns = df.columns.str.strip().str.lower()  # Normalize column names
     print("Column names:", df.columns.tolist())  # Debugging output
     return df
 
+#! i used chat gpt and copilot to figure this funtion out. basicly it creates a graph from the data in the csv file
 def create_graph():
     df = read_from_csv()  # Read data from the CSV file
     
