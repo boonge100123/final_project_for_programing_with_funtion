@@ -37,20 +37,24 @@ def create_graph():
     plt.ylabel('Price ($)')
     plt.xticks(rotation=45)  # Rotate date labels for better visibility
     plt.legend(title='Products')  # Add a legend to differentiate products
-    plt.tight_layout()
+    plt.tight_layout()  # Adjust plot to fit labels
+    plt.show() # Display the plot
 
-    # Show the plot
-    plt.show()
+def start_loop(start_or_stop):
+        while start_or_stop == 'start':
+            call_scraper()  # Call the scraper to read data from CSV
+            create_graph()  # Create a graph from the CSV data
+            time.sleep(3600)  # Sleep for 1 hour
 
 def main():
     while True:
         call_scraper()  # Call the scraper to read data from CSV
-        create_graph()  # Create a graph from the CSV data
+        # create_graph()  # Create a graph from the CSV data
         # time.sleep(86,400)  # Sleep for 1 hour
         # time.sleep(3600) #sleep for 1 hour
         # time.sleep(300) #sleep for 5 minutes
         time.sleep(90)
-    # create_graph()
 
 if __name__ == "__main__":
     main()
+    show_plot()
